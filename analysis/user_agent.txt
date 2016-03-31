@@ -1,0 +1,41 @@
++------------------+-------------------+-----------------------------+
+|    user_agent    |        CTR        |             FREQ            |
++------------------+-------------------+-----------------------------+
+|    ios_other     |  0.0666666666667  |      {'ios_other': 15}      |
+|  android_chrome  |  0.0108303249097  |   {'android_chrome': 277}   |
+|  android_safari  |  0.0106951871658  |  {'android_safari': 13090}  |
+|  android_other   |  0.00734522560336 |    {'android_other': 953}   |
+|    mac_other     |  0.00653976410137 |     {'mac_other': 8563}     |
+|   linux_chrome   |  0.00653594771242 |    {'linux_chrome': 918}    |
+|    mac_safari    |  0.00493539346742 |    {'mac_safari': 40321}    |
+|    ios_safari    |  0.00239808153477 |     {'ios_safari': 417}     |
+|  android_opera   |  0.00221238938053 |    {'android_opera': 452}   |
+|   other_other    |  0.00220750551876 |    {'other_other': 1359}    |
+|    mac_chrome    |  0.00135409614083 |     {'mac_chrome': 1477}    |
+|    windows_ie    | 0.000672465780169 |   {'windows_ie': 1797861}   |
+|  windows_other   | 0.000535372848948 |   {'windows_other': 13075}  |
+| windows_firefox  | 0.000520652551198 |  {'windows_firefox': 23048} |
+|  windows_chrome  | 0.000457426433324 |  {'windows_chrome': 911622} |
+| windows_theworld | 0.000415652277181 | {'windows_theworld': 16841} |
+|  windows_opera   | 0.000362450163103 |   {'windows_opera': 2759}   |
+| windows_maxthon  | 0.000309565576308 |  {'windows_maxthon': 9691}  |
+|  windows_safari  | 0.000286615075953 |   {'windows_safari': 3489}  |
+|  linux_firefox   |        0.0        |    {'linux_firefox': 352}   |
+| android_maxthon  |        0.0        |   {'android_maxthon': 34}   |
+|  other_firefox   |        0.0        |     {'other_firefox': 2}    |
+|   linux_safari   |        0.0        |    {'linux_safari': 192}    |
+|   other_safari   |        0.0        |     {'other_safari': 60}    |
+|    mac_opera     |        0.0        |      {'mac_opera': 15}      |
+|    android_ie    |        0.0        |      {'android_ie': 2}      |
+|   mac_maxthon    |        0.0        |     {'mac_maxthon': 33}     |
+|     other_ie     |        0.0        |       {'other_ie': 21}      |
+|   linux_opera    |        0.0        |     {'linux_opera': 27}     |
+|   linux_other    |        0.0        |     {'linux_other': 65}     |
+| android_firefox  |        0.0        |   {'android_firefox': 16}   |
+|   mac_firefox    |        0.0        |     {'mac_firefox': 582}    |
+|    mac_sogou     |        0.0        |       {'mac_sogou': 8}      |
+|   other_chrome   |        0.0        |     {'other_chrome': 18}    |
+|   other_opera    |        0.0        |     {'other_opera': 144}    |
+|  windows_sogou   |        0.0        |     {'windows_sogou': 3}    |
++------------------+-------------------+-----------------------------+
+[36 rows x 3 columns]
