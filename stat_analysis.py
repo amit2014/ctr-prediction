@@ -1,7 +1,14 @@
 
 # Following: http://blog.dato.com/beginners-guide-to-click-through-rate-prediction-with-logistic-regression
 
+########################################################################################################################
+
+# import package
 import graphlab as gl
+
+########################################################################################################################
+
+# read data
 data = gl.SFrame.read_csv('data_train.txt', delimiter='\t', verbose=False)
 
 # print(data.head(1))
