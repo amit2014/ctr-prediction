@@ -48,7 +48,7 @@ log_baseline = gl.logistic_classifier.create(train_data, target='click', feature
 log_predictions = log_baseline.predict(test_data, output_type='probability')
 
 # open logistic regression model predictions file
-with open('predictions/log_predictions.txt', mode='w') as log_prediction_file:
+with open('predictions/log_predictions.csv', mode='w') as log_prediction_file:
     # write headers to file
     log_prediction_file.write('Id,Prediction\n')
     # set logistic regression model prediction id to 1
@@ -79,7 +79,7 @@ svm_baseline = gl.svm_classifier.create(train_data, target='click', features=fea
 svm_predictions = svm_baseline.predict(test_data, output_type='margin')
 
 # open support vector machines model predictions file
-with open('predictions/svm_predictions.txt', mode='w') as svm_prediction_file:
+with open('predictions/svm_predictions.csv', mode='w') as svm_prediction_file:
     # write headers to file
     svm_prediction_file.write('Id,Prediction\n')
     # set support vector machines model prediction id to 1
