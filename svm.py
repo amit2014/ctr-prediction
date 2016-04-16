@@ -1,8 +1,4 @@
 
-# Following: https://dato.com/learn/gallery/notebooks/feature_engineering_with_graphlab_create.html
-
-########################################################################################################################
-
 # import package
 import graphlab as gl
 

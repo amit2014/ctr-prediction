@@ -1,8 +1,4 @@
 
-# Following: http://blog.dato.com/beginners-guide-to-click-through-rate-prediction-with-logistic-regression
-
-########################################################################################################################
-
 # import package
 import graphlab as gl
 
