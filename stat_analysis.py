@@ -9,7 +9,7 @@ import graphlab as gl
 ########################################################################################################################
 
 # read data
-data = gl.SFrame.read_csv('data_train.txt', delimiter='\t', verbose=False)
+data = gl.SFrame.read_csv('train_data.txt', delimiter='\t', verbose=False)
 
 # print(data.head(1))
 
