@@ -63,7 +63,7 @@ def main():
 
     train_set, validation_set, test_set, features = load_data()
 
-    print('time used = {0:.0f}'.format(time.time()-start))
+    print('time taken to run the model: {0:.0f}'.format(time.time()-start))
 
 
 ########################################################################################################################
