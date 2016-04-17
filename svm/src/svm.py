@@ -9,9 +9,9 @@ import graphlab as gl
 def load_data():
 
     # load train data
-    train_set = gl.SFrame.read_csv('data/train_data.txt', delimiter='\t', verbose=False)
+    train_set = gl.SFrame.read_csv('../../data/train_data.txt', delimiter='\t', verbose=False)
     # load test data
-    test_set = gl.SFrame.read_csv('data/test_data.txt', delimiter='\t', verbose=False)
+    test_set = gl.SFrame.read_csv('../../data/test_data.txt', delimiter='\t', verbose=False)
     # split train data to train set and validation set
     train_set, validation_set = train_set.random_split(0.8, seed=1)
 
@@ -61,7 +61,7 @@ def svm(train_set, validation_set, test_set, features):
     svm_predictions = svm_baseline.predict(test_set, output_type='margin')
 
     # open support vector machines model predictions file
-    with open('svm/output/svm_predictions.csv', mode='w') as svm_prediction_file:
+    with open('../output/svm_predictions.csv', mode='w') as svm_prediction_file:
         # write headers to file
         svm_prediction_file.write('Id,Prediction\n')
         # set support vector machines model prediction id to 1
