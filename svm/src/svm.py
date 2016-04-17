@@ -61,7 +61,7 @@ def svm(train_set, validation_set, test_set, features):
     svm_predictions = svm_baseline.predict(test_set, output_type='margin')
 
     # open support vector machines model predictions file
-    with open('predictions/svm_predictions.csv', mode='w') as svm_prediction_file:
+    with open('svm/output/svm_predictions.csv', mode='w') as svm_prediction_file:
         # write headers to file
         svm_prediction_file.write('Id,Prediction\n')
         # set support vector machines model prediction id to 1

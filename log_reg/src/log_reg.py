@@ -61,7 +61,7 @@ def log_reg(train_set, validation_set, test_set, features):
     log_predictions = log_baseline.predict(test_set, output_type='probability')
 
     # open logistic regression model predictions file
-    with open('predictions/log_predictions.csv', mode='w') as log_prediction_file:
+    with open('log_reg/output/log_predictions.csv', mode='w') as log_prediction_file:
         # write headers to file
         log_prediction_file.write('Id,Prediction\n')
         # set logistic regression model prediction id to 1
