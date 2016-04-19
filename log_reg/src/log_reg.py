@@ -103,13 +103,13 @@ def log_reg(train_set, validation_set, test_set, features):
     log_roc_curve = log_baseline.evaluate(validation_set, metric='roc_curve')
 
     # print logistic regression model validation set auc
-    print 'Logistic Regression Model - Validation Set - AUC: {}\n'.format(log_auc)
+    print ('Logistic Regression Model - Validation Set - AUC: {}\n'.format(log_auc))
 
     # print logistic regression model validation set loss
-    print 'Logistic Regression Model - Validation Set - Log Loss: {}\n'.format(log_loss)
+    print ('Logistic Regression Model - Validation Set - Log Loss: {}\n'.format(log_loss))
 
     # print logistic regression model validation set accuracy
-    print 'Logistic Regression Model - Validation Set - Accuracy: {}\n'.format(log_accuracy)
+    print ('Logistic Regression Model - Validation Set - Accuracy: {}\n'.format(log_accuracy))
 
     ####################################################################################################################
 
