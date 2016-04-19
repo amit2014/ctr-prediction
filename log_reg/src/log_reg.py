@@ -29,42 +29,22 @@ def load_data():
 ########################################################################################################################
 
 
-# merges features
-def feature_merger(train_set, validation_set):
-
-    # if feature already in train set
-    if 'ad_slot_width_height' in train_set.column_names():
-        # return train set
-        return train_set
-
-    # merge features
-    train_set['ad_slot_width_height'] = train_set['ad_slot_width'] + train_set['ad_slot_height']
-
-    ####################################################################################################################
-
-    # if feature already in validation set
-    if 'ad_slot_width_height' in validation_set.column_names():
-        # return validation set
-        return validation_set
-
-    # merge features
-    validation_set['ad_slot_width_height'] = validation_set['ad_slot_width'] + validation_set['ad_slot_height']
-
-    ####################################################################################################################
-
-    # return train and validation set
-    return train_set, validation_set
-
-
-########################################################################################################################
-
-
 # one hot encoder
 def one_hot_encoder(train_set):
 
     # set features
     features = ['url',
-                'domain']
+                'domain',
+
+                'user_agent',
+
+                'ad_slot_id',
+                'ad_exchange',
+                'ad_slot_width',
+                'ad_slot_height',
+                'ad_slot_format',
+                'ad_slot_visibility',
+                'ad_slot_floor_price']
 
     # create one hot encoder
     encoder = fe.create(train_set, fe.OneHotEncoder(features, max_categories=100))
@@ -77,83 +57,18 @@ def one_hot_encoder(train_set):
 
 
 # encodes features
-def one_hot_encode(train_set, validation_set):
+def one_hot_encode(data_set, encoder):
 
-    # create one hot encoder
-    encoder = one_hot_encoder(train_set)
-
-    # if train features are already encoded
-    if 'encoded_features' in train_set.column_names():
+    # if data set features are already encoded
+    if 'encoded_features' in data_set.column_names():
         # return train set
-        return train_set
+        return data_set
 
-    # encode train features
-    encoded_train_features = encoder.transform(train_set)
-
-    ####################################################################################################################
-
-    # if validation features are already encoded
-    if 'encoded_features' in validation_set.column_names():
-        # return validation set
-        return validation_set
-
-    # encode validation features
-    encoded_validation_features = encoder.transform(validation_set)
-
-    ####################################################################################################################
+    # encode data set features
+    encoded_data_set_features = encoder.transform(data_set)
 
     # return encoded train features
-    return encoded_train_features, encoded_validation_features
-
-
-########################################################################################################################
-
-
-# feature hasher
-def feature_hasher(train_set):
-
-    # set features
-    features = ['url',
-                'domain']
-
-    # create feature hasher
-    hasher = fe.create(train_set, fe.FeatureHasher(features=features))
-
-    # return feature hasher
-    return hasher
-
-
-########################################################################################################################
-
-
-# hashes features
-def feature_hash(train_set, validation_set):
-
-    # create feature hasher
-    hasher = feature_hasher(train_set)
-
-    # if train features are already hashed
-    if 'hashed_features' in train_set.column_names():
-        # return train set
-        return train_set
-
-    # hash train features
-    hashed_train_features = hasher.transform(train_set)
-
-    ####################################################################################################################
-
-    # if validation features are already hashed
-    if 'hashed_features' in validation_set.column_names():
-        # return validation set
-        return validation_set
-
-    # hash validation features
-    hashed_validation_features = hasher.transform(validation_set)
-
-    ####################################################################################################################
-
-    # return hashed train and validation features
-    return hashed_train_features, hashed_validation_features
+    return encoded_data_set_features
 
 
 ########################################################################################################################
@@ -166,10 +81,14 @@ def log_reg(train_set, validation_set, test_set, features):
     log_baseline = gl.logistic_classifier.create(train_set,
                                                  target='click',
                                                  features=features,
+                                                 # class_weights='auto',
                                                  validation_set=validation_set,
                                                  max_iterations=20)
 
     ####################################################################################################################
+
+    results = log_baseline.evaluate(validation_set)
+    print results
 
     # calculate logistic regression model validation set auc
     log_auc = log_baseline.evaluate(validation_set, metric='auc')
@@ -180,6 +99,7 @@ def log_reg(train_set, validation_set, test_set, features):
     # calculate logistic regression model validation set accuracy
     log_accuracy = log_baseline.evaluate(validation_set, metric='accuracy')
 
+    # calculate logistic regression model validation set roc curve
     log_roc_curve = log_baseline.evaluate(validation_set, metric='roc_curve')
 
     # print logistic regression model validation set auc
@@ -247,78 +167,55 @@ def main():
     train_set, validation_set, test_set = load_data()
 
     # train_set.print_rows(5)
+    # validation_set.print_rows(5)
+    # test_set.print_rows(5)
 
     ####################################################################################################################
 
-    # merge features
-    # train_set, validation_set = feature_merger(train_set, validation_set)
+    # create encoder
+    encoder = one_hot_encoder(train_set)
 
-    ####################################################################################################################
-
-    # one hot encode train and validation set
-    train_set_encoded, validation_set_encoded = one_hot_encode(train_set, validation_set)
-
-    # train_set_encoded.print_rows(5)
-
-    ####################################################################################################################
-
-    # feature hash train and validation set
-    # train_set_hashed, validation_set_hashed = feature_hash(train_set, validation_set)
-
-    # train_set_hashed.print_rows(5)
-
-    ####################################################################################################################
-
-    encoded_features_train = train_set_encoded.select_column('encoded_features')
-    encoded_features_validation = validation_set_encoded.select_column('encoded_features')
-    train_set.add_column(encoded_features_train, 'encoded_features')
-    validation_set.add_column(encoded_features_validation, 'encoded_features')
-
-    # hashed_features_train = train_set_hashed.select_column('hashed_features')
-    # hashed_features_validation = validation_set_hashed.select_column('hashed_features')
-    # train_set.add_column(hashed_features_train, 'hashed_features')
-    # validation_set.add_column(hashed_features_validation, 'hashed_features')
-
-    ####################################################################################################################
+    # one hot encode train set
+    train_set = one_hot_encode(train_set, encoder)
+    # one hot validation set
+    validation_set = one_hot_encode(validation_set, encoder)
+    # one hot encode test set
+    test_set = one_hot_encode(test_set, encoder)
 
     # train_set.print_rows(5)
     # validation_set.print_rows(5)
+    # test_set.print_rows(5)
+
+    ####################################################################################################################
 
     '''
     click
 
-    url                 - one hot encoded
-    domain              - one hot encoded
-
     hour                - normal
     weekday             - normal
-    user_agent          - normal
-    ad_slot_width       - normal
-    ad_slot_height      - normal
-    ad_slot_format      - normal
-    ad_slot_floor_price - normal
+
+    url                 - one hot encoded
+    domain              - one hot encoded
+    user_agent          - one hot encoded
+    ad_slot_id          - one hot encoded
+    ad_exchange         - one hot encoded
+    ad_slot_width       - one hot encoded
+    ad_slot_height      - one hot encoded
+    ad_slot_format      - one hot encoded
+    ad_slot_floor_price - one hot encoded
+    ad_slot_visibility  - one hot encoded
 
     ip                  - bad
     city                - bad
     region              - bad
     timestamp           - bad
     user_tags           - bad
-    ad_slot_id          - bad
-    ad_exchange         - bad
     creative_id         - bad
-    ad_slot_visibility  - bad
     '''
 
     # set features
     features = ['hour',
                 'weekday',
-
-                'user_agent',
-
-                'ad_slot_width',
-                'ad_slot_height',
-                'ad_slot_format',
-                'ad_slot_floor_price',
 
                 'encoded_features']
 
