@@ -1,6 +1,7 @@
 
 # import package
 import graphlab as gl
+import math
 
 ########################################################################################################################
 
@@ -49,7 +50,7 @@ def svm(train_set, validation_set, test_set, features):
     # baseline support vector machines model - uses all features
     svm_baseline = gl.svm_classifier.create(train_set, target='click', features=features,
                                             validation_set=validation_set,
-                                            max_iterations=50)
+                                            max_iterations=10)
 
     # calculate support vector machines model validation set f1 score
     svm_f1_score = svm_baseline.evaluate(validation_set, metric='f1_score')
@@ -58,7 +59,14 @@ def svm(train_set, validation_set, test_set, features):
     print 'Support Vector Machines Model - Validation Set - F1 Score: {}'.format(svm_f1_score)
 
     # get support vector machines model predictions
-    svm_predictions = svm_baseline.predict(test_set, output_type='margin')
+    svm_predictions = svm_baseline.predict(test_set, output_type='class')
+    svm_values = svm_baseline.predict(test_set, output_type='margin')
+
+    n_1 = svm_predictions.filter(lambda x: x == 1).size()
+    n_0 = svm_predictions.filter(lambda x: x == 0).size()
+
+    _a, _b = platt_scaling(svm_values, svm_predictions, n_1, n_0)
+    svm_predictions = svm_predictions.apply(lambda x: applyPlatt(x, _a, _b))
 
     # open support vector machines model predictions file
     with open('../output/svm_predictions.csv', mode='w') as svm_prediction_file:
@@ -75,6 +83,87 @@ def svm(train_set, validation_set, test_set, features):
 
     # close support vector machines model predictions file
     svm_prediction_file.close()
+
+
+########################################################################################################################
+
+
+def platt_scaling(svm_output, svm_prediction, n_1, n_0):
+    _a = 0.
+    _b = math.log((n_0+1) / (n_1+1))
+    hi_target = (n_1+1) / (n_1+2)
+    lo_target = 1 / (n_0+2)
+    lambda_v = 1e-3
+    old_err = 1e300
+    pp = gl.SArray(data=[((n_1+1)/(n_0+n_1+2)) for _ in xrange(svm_output.size())], dtype=float)
+    count = 0
+    for it in xrange(100):
+        a = b = c = d = e = 0.
+        # compute the Hessian & gradient error function w.r.t. A & B
+        for i in xrange(pp.size()):
+            t = hi_target if svm_prediction[i] else lo_target
+            d1 = pp[i] - t
+            d2 = pp[i] * (1 - pp[i])
+            a += svm_output[i] * svm_output[i] * d2
+            b += d2
+            c += svm_output[i] * d2
+            d += svm_output[i] * d1
+            e += d1
+
+        # if gradient is really tiny, then stop
+        if abs(d) < 1e-9 and abs(e) < 1e-9:
+            break
+        old_a = _a
+        old_b = _b
+        err = 0.
+        while True:
+            det = (a + lambda_v) * (b + lambda_v) - c*c
+            if det == 0.: # if determinant of Hessian is zero
+                # increases stabilizer
+                lambda_v *= 10
+                continue
+            _a = old_a + ((b + lambda_v) * d - c*e) / det
+            _b = old_b + ((a + lambda_v) * e - c*d) / det
+
+            # now perform the goodness of fit
+            err = 0.
+            for j in xrange(pp.size()):
+                p = 1 / (1 + math.exp(svm_output[j]*_a + _b))
+                pp[j] = p
+                if p <= 1.383897e-87:
+                    err -= t * (-200) + (1 - t) * math.log(1 - p)
+                elif p == 1:
+                    err -= t * math.log(p) + (1 - t) * (-200)
+                else:
+                    err -= t*math.log(p) + (1-t)*math.log(1-p)
+
+            if err < old_err*(1 + 1e-7):
+                lambda_v *= 0.1
+                break
+
+            # error did not decrease: increase stabilizer by factor of 10 & try again
+            lambda_v *= 10
+            if lambda_v >= 1e6: # something is broken: give up
+                break
+
+        diff = err - old_err
+        scale = 0.5 * (err + old_err + 1)
+        if diff > -1e-3*scale and diff < 1e-7*scale:
+            count += 1
+        else:
+            count = 0
+
+        old_err = err
+        if count == 3:
+            break
+
+    return _a, _b
+
+
+########################################################################################################################
+
+def applyPlatt(x, _a, _b):
+    return 1 / (1 + math.exp(x*_a + _b))
 
 
 ########################################################################################################################
