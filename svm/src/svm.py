@@ -66,7 +66,7 @@ def svm(train_set, validation_set, test_set, features):
     n_0 = svm_predictions.filter(lambda x: x == 0).size()
 
     _a, _b = platt_scaling(svm_values, svm_predictions, n_1, n_0)
-    svm_predictions = svm_predictions.apply(lambda x: applyPlatt(x, _a, _b))
+    svm_predictions = svm_predictions.apply(lambda x: apply_platt(x, _a, _b))
 
     # open support vector machines model predictions file
     with open('../output/svm_predictions.csv', mode='w') as svm_prediction_file:
@@ -130,12 +130,16 @@ def platt_scaling(svm_output, svm_prediction, n_1, n_0):
             for j in xrange(pp.size()):
                 p = 1 / (1 + math.exp(svm_output[j]*_a + _b))
                 pp[j] = p
+                ## At this step, make sure log(0) returns -200
                 if p <= 1.383897e-87:
                     err -= t * (-200) + (1 - t) * math.log(1 - p)
                 elif p == 1:
                     err -= t * math.log(p) + (1 - t) * (-200)
                 else:
                     err -= t*math.log(p) + (1-t)*math.log(1-p)
+
+                if err == -float("inf"):
+                    print '==Something is wrong=='
 
             if err < old_err*(1 + 1e-7):
                 lambda_v *= 0.1
@@ -144,6 +148,7 @@ def platt_scaling(svm_output, svm_prediction, n_1, n_0):
             # error did not decrease: increase stabilizer by factor of 10 & try again
             lambda_v *= 10
             if lambda_v >= 1e6: # something is broken: give up
+                print '==Somethig is broken... giving up=='
                 break
 
         diff = err - old_err
@@ -152,7 +157,7 @@ def platt_scaling(svm_output, svm_prediction, n_1, n_0):
             count += 1
         else:
             count = 0
-
+        print count
         old_err = err
         if count == 3:
             break
@@ -162,7 +167,7 @@ def platt_scaling(svm_output, svm_prediction, n_1, n_0):
 
 ########################################################################################################################
 
-def applyPlatt(x, _a, _b):
+def apply_platt(x, _a, _b):
     return 1 / (1 + math.exp(x*_a + _b))
 
 
