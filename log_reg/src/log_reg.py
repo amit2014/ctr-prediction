@@ -435,10 +435,10 @@ def main():
 
     ####################################################################################################################
 
-    # tags_label = 'tags'
-    # train_set.add_column(train_set.select_column('user_tags').apply(lambda x: split_tags(x)), tags_label)
-    # validation_set.add_column(validation_set.select_column('user_tags').apply(lambda x: split_tags(x)), tags_label)
-    # test_set.add_column(test_set.select_column('user_tags').apply(lambda x: split_tags(x)), tags_label)
+    tags_label = 'tags'
+    train_set.add_column(train_set.select_column('user_tags').apply(lambda x: split_tags(x)), tags_label)
+    validation_set.add_column(validation_set.select_column('user_tags').apply(lambda x: split_tags(x)), tags_label)
+    test_set.add_column(test_set.select_column('user_tags').apply(lambda x: split_tags(x)), tags_label)
 
     # train_set.print_rows(5)
     # validation_set.print_rows(5)
@@ -446,11 +446,11 @@ def main():
 
     ####################################################################################################################
 
-    # os_label = 'os'
-    # browser_label = 'browser'
-    # train_set = split_user_agent(train_set, os_label, browser_label)
-    # validation_set = split_user_agent(validation_set, os_label, browser_label)
-    # test_set = split_user_agent(test_set, os_label, browser_label)
+    os_label = 'os'
+    browser_label = 'browser'
+    train_set = split_user_agent(train_set, os_label, browser_label)
+    validation_set = split_user_agent(validation_set, os_label, browser_label)
+    test_set = split_user_agent(test_set, os_label, browser_label)
 
     # train_set.print_rows(5)
     # validation_set.print_rows(5)
@@ -486,14 +486,14 @@ def main():
     ####################################################################################################################
 
     # create encoder
-    # encoder = one_hot_encoder(train_set)
+    encoder = one_hot_encoder(train_set)
 
     # one hot encode train set
-    # train_set = one_hot_encode(train_set, encoder)
+    train_set = one_hot_encode(train_set, encoder)
     # one hot encode validation set
-    # validation_set = one_hot_encode(validation_set, encoder)
+    validation_set = one_hot_encode(validation_set, encoder)
     # one hot encode test set
-    # test_set = one_hot_encode(test_set, encoder)
+    test_set = one_hot_encode(test_set, encoder)
 
     # train_set.print_rows(5)
     # validation_set.print_rows(5)
@@ -548,13 +548,13 @@ def main():
                 'encoded_features']
 
     # run logistic regression model
-    # log_roc_curve = log_reg(train_set, validation_set, test_set, features)
+    log_roc_curve = log_reg(train_set, validation_set, test_set, features)
 
     # save logistic regression model validation set roc curve to file
     # log_roc_curve.get('roc_curve').select_columns(['fpr', 'tpr']).save('../output/log_roc_curve.csv')
 
     # plot log reg and gbm roc curve
-    plot_log_gbm_roc()
+    # plot_log_gbm_roc()
 
 
 ########################################################################################################################
