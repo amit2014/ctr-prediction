@@ -160,14 +160,14 @@ def one_hot_encoder(train_set):
                 'tags',
 
                 'ad_slot_id',
-
+                'ad_exchange',
                 'ad_slot_width',
                 'ad_slot_height',
                 'ad_slot_format',
                 'ad_slot_visibility']
 
     # create one hot encoder
-    encoder = fe.create(train_set, fe.OneHotEncoder(features, max_categories=138))
+    encoder = fe.create(train_set, fe.OneHotEncoder(features, max_categories=120))
 
     # return one hot encoder
     return encoder
@@ -521,7 +521,10 @@ def main():
     os                  - one hot encoded
     browser             - one hot encoded
 
+    tags                - one hot encoded
+
     ad_slot_id          - one hot encoded
+    ad_exchange         - one hot encoded
     ad_slot_width       - one hot encoded
     ad_slot_height      - one hot encoded
     ad_slot_format      - one hot encoded
@@ -533,7 +536,6 @@ def main():
     user_id             - bad
     timestamp           - bad
     user_tags           - bad
-    ad_exchange         - bad
     creative_id         - bad
     key_page_url        - bad
     advertiser_id       - bad
