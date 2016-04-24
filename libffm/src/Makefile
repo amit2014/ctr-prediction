@@ -29,3 +29,7 @@ clean:
 
 #### All targets ####
 all: libffm ffm-train ffm-predict lib/ffm.o
+
+# cd /usr/local/opt/python/Frameworks/Python.framework/Versions/2.7/envs/dato-env/bin
+# source activate dato-env
+# cd ~/Dropbox/PyCharmProjects/Web\ Economic\ -\ CTR\ Prediction/
